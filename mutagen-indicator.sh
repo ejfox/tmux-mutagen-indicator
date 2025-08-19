@@ -24,7 +24,7 @@ parse_mutagen_status() {
     output=$(mutagen sync list 2>/dev/null || echo "")
     
     if [ -z "$output" ]; then
-        echo "${ICON_UNKNOWN} No sessions"
+        echo "{\"text\":\"\",\"tooltip\":\"No Mutagen sessions\",\"color\":\"0xff939ab7\"}"
         return
     fi
     
@@ -70,7 +70,7 @@ parse_mutagen_status() {
     done <<< "$output"
     
     if [ "$session_count" -eq 0 ]; then
-        echo "${ICON_UNKNOWN} No sessions"
+        echo ""
         return
     fi
     
@@ -161,7 +161,7 @@ output_sketchybar() {
     done <<< "$output"
     
     if [ "$session_count" -eq 0 ]; then
-        echo "{\"text\":\"${ICON_UNKNOWN}\",\"tooltip\":\"No Mutagen sessions\",\"color\":\"$COLOR_UNKNOWN\"}"
+        echo "{\"text\":\"\",\"tooltip\":\"No Mutagen sessions\",\"color\":\"$COLOR_UNKNOWN\"}"
         return
     fi
     
@@ -173,18 +173,15 @@ output_sketchybar() {
     if [ "$error_count" -gt 0 ]; then
         text="${ICON_ERROR}"
         tooltip="$tooltip | Errors: $error_count"
+        color="$COLOR_ERROR"
     elif [ "$syncing_count" -gt 0 ]; then
         text="${ICON_SYNCING}"
         tooltip="$tooltip | Syncing: $syncing_count"
-    elif [ "$paused_count" -gt 0 ]; then
-        text="${ICON_PAUSED}"
-        tooltip="$tooltip | Paused: $paused_count"
-    elif [ "$synced_count" -eq "$session_count" ]; then
-        text="${ICON_SYNCED}"
-        tooltip="$tooltip | All synced"
+        color="$COLOR_SYNCING"
     else
-        text="${ICON_UNKNOWN}"
-        tooltip="$tooltip | Status unknown"
+        text=""
+        tooltip="$tooltip | All synced"
+        color="$COLOR_SYNCED"
     fi
     
     if [ "$SHOW_STATUS" -eq 1 ] && [ "$session_count" -gt 1 ]; then
